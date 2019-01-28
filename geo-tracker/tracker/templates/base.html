@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}">
+  </head>
+  <body>
+    
+    <h1 class="text-center">GeoTracker</h1>
+    <nav class="navbar navbar-expand-lg">
+      <ul class="navbar-nav mr-auto">
+	
+	{% if g.user %}
+	
+	<li class="nav-item">
+	  <span>User: {{ g.user['usr_name'] }}</span>
+	</li>
+	<li class="nav-link">
+	  <a href="{{ url_for('auth.logout') }}">Log Out</a>
+	</li>
+	
+	{% endif %}
+	  
+      </ul>
+    </nav>
+
+    <header class="text-center">
+      {% block header %}{% endblock %}
+    </header>
+    
+    {% block content %}{% endblock %}
+
+    <!-- Error messages -->
+    {% for message in get_flashed_messages()  %}
+    
+    <div class="container text-danger">{{ message }}</div>
+    
+    {% endfor %}
+    
+  </body>
+</html>
