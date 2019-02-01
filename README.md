@@ -6,7 +6,9 @@ Responsive web application that uses GPS to track and share routes between users
 * docker
 * Docker service running
 
-## Instructions 
+## Instructions
+
+### Deploy on Docker
 
 0. In case of permission errors:
    ``` $ sudo usermod -aG docker $USER ```
@@ -20,3 +22,7 @@ Responsive web application that uses GPS to track and share routes between users
 
 3. 
 
+### Deploy on a virtual environment
+
+$ gunicorn --chdir ./tracker -b 0.0.0.0:5000 server:app
+$ gunicorn --certfile ssl/cert.pem --keyfile ssl/keyfile.pem --chdir ./tracker -b 0.0.0.0:5000 server:app
