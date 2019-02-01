@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 
-def create_app(test_config = None):
+def app_factory(test_config = None):
 
     # Create and configure the app
     
@@ -26,14 +26,18 @@ def create_app(test_config = None):
         pass
 
     # Database Stuff
-    from . import database
+    from model import database
     database.init_app(app)
 
     # Blueprints
-    from . import auth
+    from views import auth
     app.register_blueprint(auth.blueprint)
 
-    from . import gps
+    from views import gps
     app.register_blueprint(gps.blueprint)
 
     return app
+
+# Create the app
+# The app object is used from gunicorn
+app = app_factory()
