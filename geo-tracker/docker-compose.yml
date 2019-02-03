@@ -1,0 +1,20 @@
+version: "3"
+services:
+  nginx:
+    container_name: nginx-server
+    image: nginx
+      volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf:ro
+	- ./ssl:/etc/nginx/ssl
+      ports:
+        - "80:80"
+	- "443:443"
+      depends_on:
+        - geo-tracker
+
+  geo-tracker:
+    container_name: geo-tracker
+    restart: always
+    build: .
+    ports:
+      - "5000:5000"

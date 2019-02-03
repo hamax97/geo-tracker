@@ -1,7 +1,3 @@
 #!/bin/sh
 
-export FLASK_APP=tracker
-export FLASK_ENV=development
-
-python3 tracker/server.py
-
+exec gunicorn --chdir ./tracker -b 0.0.0.0:5000 server:app
