@@ -1,5 +1,7 @@
 # Blueprint that contains all the login and registry views
 
+import functools
+
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -85,7 +87,7 @@ def logout():
     session.clear()
     return redirect(url_for('auth.login'))
 
-# Called after every request, no matter what                             
+# Called before every request, no matter what    
 @blueprint.before_app_request
 def load_logged_in_user():
 
@@ -96,3 +98,14 @@ def load_logged_in_user():
         g.user = get_db().execute(
             'SELECT * FROM user WHERE usr_id = ?', (user_id,)
         ).fetchone()
+
+def login_required(view):
+
+    # functools.wraps: used to maintain view's function introspection, that is, metadata.
+    @functools.wraps(view)
+    def wrapped_view(*args, **kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        return view(*args, **kwargs)
+
+    return wrapped_view

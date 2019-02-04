@@ -2,7 +2,11 @@
 <html>
   <head>
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    
+    {% block header_files %}
+    {% endblock %}
+    
   </head>
   <body>
     
@@ -36,6 +40,9 @@
     <div class="container text-danger">{{ message }}</div>
     
     {% endfor %}
+
+    {% block footer_scripts %}
+    {% endblock %}
     
   </body>
 </html>
