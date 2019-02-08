@@ -41,3 +41,7 @@ def app_factory(test_config = None):
 # Create the app
 # The app object is used from gunicorn
 app = app_factory()
+
+# Uncomment to test the web site instead of using docker
+if __name__ == '__main__':
+    app.run()
