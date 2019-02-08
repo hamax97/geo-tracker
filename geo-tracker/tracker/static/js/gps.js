@@ -18,23 +18,23 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 
 // Centering the map in the current user location
 
-var userLocationMarker, test = 0;
+var userLocationMarker, errorAlert = false;
 
 function onLocationFound(e){
 
     if(userLocationMarker){
         map.removeLayer(userLocationMarker);
-        alert("marker removed");
     }
     
     userLocationMarker = L.marker(e.latlng).addTo(gps);
     userLocationMarker.bindPopup("<b>You are here!</b>").openPopup();
-    test++;
-    alert(test);
 }
 
 function onLocationError(e){
-    alert(e.message);
+    if(!errorAlert){
+        alert(e.message);
+        errorAlert = true;
+    }
 }
 
 // - Events in case of success or error getting the location
@@ -44,4 +44,15 @@ gps.on('locationerror', onLocationError);
 function locate(){
     gps.locate({setView: true, maxZoom: 16});
 }
-setInterval(locate, 3000);
+
+// Trace route
+// create a red polyline from an array of LatLng points
+//var latlngs = [
+//    [45.51, -122.68],
+//    [37.77, -122.43],
+//    [34.04, -118.2]
+//];
+//var polyline = L.polyline(latlngs, {color: 'red'}).addTo(gps);
+//gps.fitBounds(polyline.getBounds());
+
+setInterval(locate, 2000);
