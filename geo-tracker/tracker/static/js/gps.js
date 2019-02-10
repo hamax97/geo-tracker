@@ -18,34 +18,68 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 
 // Centering the map in the current user location
 
-var userLocationMarker, errorAlert = false;
+var pos;
 
+// AUTOLOCATION
+var userLocationMarker = L.marker([0,0]).addTo(gps);
+userLocationMarker.bindPopup("<b>You are here!</b>");
+
+// - Events in case of success or error getting the location
 function onLocationFound(e){
-
-    if(userLocationMarker){
-        map.removeLayer(userLocationMarker);
-    }
-    
-    userLocationMarker = L.marker(e.latlng).addTo(gps);
-    userLocationMarker.bindPopup("<b>You are here!</b>").openPopup();
+    userLocationMarker.setLatLng(e.latlng);
+    // Uncomment to make the marker move by itself
+    pos = e.latlng;
 }
 
 function onLocationError(e){
-    if(!errorAlert){
-        alert(e.message);
-        errorAlert = true;
-    }
+    alert(e.message);
 }
 
-// - Events in case of success or error getting the location
 gps.on('locationfound', onLocationFound);
 gps.on('locationerror', onLocationError);
 
-function locate(){
-    gps.locate({setView: true, maxZoom: 16});
+//gps.locate({setView: true, watch: true});
+
+
+// AUTOMOVEMENT
+// Uncomment to make the marker move by itself
+gps.locate({setView: true});
+var movement = 0.00001;
+var temp = movement;
+function automove(){
+    userLocationMarker.setLatLng([pos.lat + (temp += movement), pos.lng + (temp+=movement)]);
+    gps.setView(userLocationMarker.getLatLng(), 20);
+}
+setInterval(automove, 1000);
+
+// TRACK ROUTE
+var interval, route;
+
+function addLine(route){
+    route.addLatLng(userLocationMarker.getLatLng());
 }
 
-// Trace route
+function traceRoute(){
+    var userPos = userLocationMarker.getLatLng();
+
+    // Add starting marker
+    var startingRouteMarker = L.marker(userPos).addTo(gps);
+    startingRouteMarker.bindPopup("<b>Route starts here!</b>");
+
+    route = L.polyline([userPos], {color: 'green', weight: 10}).addTo(gps);
+    interval = setInterval(addLine, 1000, route);
+}
+
+function finishRoute(){
+
+    //Add ending marker
+    var userPos = userLocationMarker.getLatLng();
+    var endingRouteMarker = L.marker(userPos).addTo(gps);
+    endingRouteMarker.bindPopup("<b>Route ends here!</b>");
+    console.log(route.getLatLngs());
+    //Stop drawing the route
+    clearInterval(interval);
+}
 // create a red polyline from an array of LatLng points
 //var latlngs = [
 //    [45.51, -122.68],
@@ -54,5 +88,3 @@ function locate(){
 //];
 //var polyline = L.polyline(latlngs, {color: 'red'}).addTo(gps);
 //gps.fitBounds(polyline.getBounds());
-
-setInterval(locate, 2000);
