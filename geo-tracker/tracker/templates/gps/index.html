@@ -24,12 +24,14 @@
 
 <div class="container">
     <button onclick="traceRoute()">Start</button>
-    <button onclick="finishRoute()">Finish</button>
+    <button onclick="finishRoute('{{g.user['usr_name']}}')">Finish</button>
+    <button onclick="getRoutes('{{g.user['usr_name']}}')">Saved Routes</button>
+    <button onclick="enableAutomovement()">Enable Automovement</button>
+    <button onclick="disableAutomovement()">Disable Automovement</button>
 </div>
 
 
 <div class="container" id="gps">
-
 </div>
 
 {% endblock %}

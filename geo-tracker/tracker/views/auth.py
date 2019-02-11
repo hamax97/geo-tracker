@@ -40,7 +40,10 @@ def login():
             return redirect(url_for('gps.index'))
         
         flash(error)
-        
+
+    if g.user is not None:
+        return redirect(url_for('gps.index'))
+
     return render_template('auth/login.html')
 
 # View to manage user registration
@@ -75,7 +78,7 @@ def register():
             )
             database.commit()
             
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('auth.logout'))
 
         flash(error)
             
@@ -109,10 +112,3 @@ def login_required(view):
         return view(*args, **kwargs)
 
     return wrapped_view
-
-@blueprint.after_app_request
-def set_response_headers(response):
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    return response
